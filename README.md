@@ -1,2 +1,2 @@
 # Trekkers-Heaven
-a trekking app for trekkers
+a trekking app for trekkers 
