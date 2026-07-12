@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}
+Register
+{% endblock%}
+{% block main %}
+    <form action="/register/staff" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="fullname" placeholder="Fullname" type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="email" placeholder="Email" type="email">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="phone" placeholder="Phone" type="number">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm Password" type="password">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="emergency" placeholder="Emergency Contact" type="number">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="experience" placeholder="Experience" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Register</button>
+    </form>
+
+{% endblock%}
