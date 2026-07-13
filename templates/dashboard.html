@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}My Profile{% endblock %}
+{% block main %}
+<div class="container mt-4">
+    <h3>{{ current_user.full_name }}</h3>
+    <p>Trekker · {{ current_user.status }}</p>
+
+    <div class="row mb-4">
+        <div class="col"><div class="border p-3 text-center"><h4>{{ total_booked }}</h4>Booked</div></div>
+        <div class="col"><div class="border p-3 text-center"><h4>{{ active_count }}</h4>Active</div></div>
+        <div class="col"><div class="border p-3 text-center"><h4>{{ completed_count }}</h4>Completed</div></div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <h5>My active bookings</h5>
+        <div>
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-sm btn-secondary">Edit Profile</a>
+            <a href="{{ url_for('full_history') }}" class="btn btn-sm btn-secondary">View All History</a>
+        </div>
+    </div>
+
+    {% for booking in active_bookings %}
+    <div class="border p-3 mb-2">
+        <strong>{{ booking.trek.trek_name }}</strong> <span class="badge bg-primary">{{ booking.status }}</span>
+        <p>🗓 {{ booking.trek.start_date.strftime('%b %d') }} to {{ booking.trek.end_date.strftime('%b %d') }} — {{ booking.trek.location }}</p>
+        <a href="{{ url_for('trek_detail', trek_id=booking.trek.id) }}" class="btn btn-sm btn-outline-secondary">View Details</a>
+        <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" style="display:inline;">
+            <button class="btn btn-sm btn-outline-danger">Cancel</button>
+        </form>
+    </div>
+    {% else %}
+    <p>No active bookings.</p>
+    {% endfor %}
+
+    <h5 class="mt-4">Recent history</h5>
+    <table class="table">
+        <thead><tr><th>Trek</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+            {% for booking in recent_history %}
+            <tr>
+                <td>{{ booking.trek.trek_name }}</td>
+                <td>{{ booking.booking_date.strftime('%b %Y') }}</td>
+                <td>{{ booking.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

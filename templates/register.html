@@ -1,28 +1,35 @@
 {% extends "layout.html" %}
-{% block title %}
-Register
-{% endblock%}
+{% block title %}Trekker Registration{% endblock %}
 {% block main %}
-    <form action="/register" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="fullname" placeholder="Fullname" type="text">
+<div class="container mt-4" style="max-width:450px;">
+    <h3>Trekker Registration</h3>
+    <form method="POST">
+        <div class="mb-2">
+            <label>Full Name</label>
+            <input type="text" name="fullname" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="email" placeholder="Email" type="text">
+        <div class="mb-2">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="phone" placeholder="Phone" type="text">
+        <div class="mb-2">
+            <label>Phone</label>
+            <input type="tel" name="phone" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
+        <div class="mb-2">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm Password" type="password">
+        <div class="mb-2">
+            <label>Confirm Password</label>
+            <input type="password" name="confirmation" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="emergency" placeholder="Emergency Contact" type="text">
+        <div class="mb-2">
+            <label>Emergency Contact</label>
+            <input type="tel" name="emergency" class="form-control" required>
         </div>
-        <button class="btn btn-primary" type="submit">Register</button>
+        <button type="submit" class="btn btn-primary">Register</button>
     </form>
-
-{% endblock%}
+    <p class="mt-2">Already registered? <a href="{{ url_for('login') }}">Login</a></p>
+</div>
+{% endblock %}

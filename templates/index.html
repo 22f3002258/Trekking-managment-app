@@ -1,13 +1,76 @@
 {% extends "layout.html" %}
-{% block title%}
-home 
-{% endblock %}
-
+{% block title %}TrekManager — Home{% endblock %}
 {% block main %}
 
-<div>
-  <h1>trekking app</h1>
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est eligendi sequi ipsa, accusamus itaque fugiat debitis dicta velit libero laudantium.</p>
+<div id="carouselExampleCaptions" class="carousel slide carousel-fade">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+            aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+            aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+            aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="/static/img/hero2.jpg" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Find your next trek</h5>
+                <p>Explore breathtaking trekking destinations, book your favorite trails with ease, and enjoy a safe, memorable journey guided by experienced trek leaders</p>
+                <a href="{{ url_for('browse_treks') }}" class="btn btn-warning">Browse treks</a>
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('staff_register') }}" class="btn btn-outline-light">Become guide</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="/static/img/hero3.jpg" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5>Find your next trek</h5>
+                <p>Explore breathtaking trekking destinations, book your favorite trails with ease, and enjoy a safe, memorable journey guided by experienced trek leaders</p>
+                <a href="{{ url_for('browse_treks') }}" class="btn btn-warning">Browse treks</a>
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('staff_register') }}" class="btn btn-outline-light">Become guide</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="/static/img/hero_img.jpg" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h1>Find your next trek</h1>
+                <p>Explore breathtaking trekking destinations, book your favorite trails with ease, and enjoy a safe, memorable journey guided by experienced trek leaders</p>
+                <a href="{{ url_for('browse_treks') }}" class="btn btn-warning">Browse treks</a>
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('staff_register') }}" class="btn btn-outline-light">Become guide</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
 
+<div class="container mt-4">
+    <h4>Featured treks</h4>
+    <div class="row">
+        {% for trek in featured_treks %}
+        <div class="card m-lg-4" style="width:18rem;">
+            <img src="{{url_for('static', filename='uploads/treks' + trek.image_filename)}}" class="card-img-top">
+            <div class="card-body">
+                <h5 class="card-title">{{ trek.trek_name }}</h5> <span class="badge bg-info">{{ trek.difficulty
+                    }}</span>
+                <p>{{ trek.location }}</p>
+                <p>₹{{ trek.cost }}</p>
+                <a href="{{ url_for('trek_detail', trek_id=trek.id) }}" class="btn btn-sm btn-secondary">Details</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

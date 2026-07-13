@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Find a Trek{% endblock %}
+{% block main %}
+<div class="container mt-4">
+    <h3>Find a Trek</h3>
+
+    <form method="GET" class="d-flex gap-2 mb-3">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Search treks..." class="form-control">
+        <button class="btn btn-primary">Search</button>
+    </form>
+
+    <div class="btn-group mb-3">
+        {% for d in ["All", "Easy", "Moderate", "Hard"] %}
+            <a href="{{ url_for('browse_treks', difficulty=d, q=search_query) }}"
+               class="btn btn-outline-secondary {% if difficulty == d %}active{% endif %}">{{ d }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="row">
+        {% for trek in treks %}
+        <div class="col-md-4 mb-3">
+            <div class="border p-3">
+                {% if trek.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/treks/' + trek.image_filename) }}" class="img-fluid mb-2">
+                {% endif %}
+                <strong>{{ trek.trek_name }}</strong> <span class="badge bg-info">{{ trek.difficulty }}</span>
+                <p>📍 {{ trek.location }} · ⏱ {{ (trek.end_date - trek.start_date).days }} days</p>
+                <p>🪑 {{ trek.available_slots }} slots left · ₹{{ trek.cost }}</p>
+                <a href="{{ url_for('trek_detail', trek_id=trek.id) }}" class="btn btn-sm btn-secondary">Details</a>
+            </div>
+        </div>
+        {% else %}
+        <p>No treks found.</p>
+        {% endfor %}
+    </div>
+
+    <nav>
+        <ul class="pagination">
+            {% if pagination.has_prev %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('browse_treks', page=pagination.prev_num, difficulty=difficulty, q=search_query) }}">Previous</a></li>
+            {% endif %}
+            <li class="page-item disabled"><span class="page-link">Page {{ pagination.page }} of {{ pagination.pages }}</span></li>
+            {% if pagination.has_next %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('browse_treks', page=pagination.next_num, difficulty=difficulty, q=search_query) }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

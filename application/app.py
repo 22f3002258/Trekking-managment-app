@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from flask import render_template, request, session, flash, redirect, url_for
+from flask import render_template, request, session, flash, redirect, url_for,abort
 from application.models import Users , Staffs, Treks, Bookings, Admins
 from flask_session import Session
 from sqlalchemy import or_
@@ -42,7 +42,8 @@ def init(app):
 
     @app.route("/")
     def home():
-        return render_template("index.html")
+        featured_treks = Treks.query.filter_by(status="Open").limit(3).all()
+        return render_template("index.html", featured_treks=featured_treks)
 
     @app.route("/register", methods=["GET", "POST"])
     def register():
@@ -141,11 +142,6 @@ def init(app):
             return redirect(url_for("login"))
 
         return render_template("login.html")
-    @app.route("/dashboard/<int:user_id>")
-    @login_required
-    def dashboard(user_id):
-        return render_template("dashboard.html", user=current_user)
-
     @app.route("/logout")
     @login_required
     def logout():
@@ -155,7 +151,158 @@ def init(app):
     
     @app.route("/treks")
     def browse_treks():
-        ...
+        difficulty=request.args.get("difficulty","ALL")
+        search_query=request.args.get("q","")
+        page = request.args.get("page", 1, type=int)
+
+        query = Treks.query.filter_by(status="Open")
+
+        if difficulty != "All":
+            query = query.filter_by(difficulty=difficulty)
+        
+        if search_query:
+            query = query.filter(
+                or_(
+                    Treks.trek_name.ilike(f"%{search_query}%"),
+                    Treks.location.ilike(f"%{search_query}%")
+                )
+            )
+        pagination = query.paginate(page=page, per_page=6, error_out=False)
+        return render_template(
+            "treks.html",
+            treks=pagination.items,
+            pagination=pagination,
+            difficulty=difficulty,
+            search_query=search_query
+            )
+
+    @app.route("/treks/<int:trek_id>")
+    def trek_detail(trek_id):
+        trek = Treks.query.get_or_404(trek_id)
+        return render_template("trek_detail.html", trek=trek)
+    
+    @app.route("/treks/<int:trek_id>/book", methods=["POST"])
+    @login_required
+    def book_trek(trek_id):
+        if isinstance(current_user, Staffs) or isinstance(current_user, Admins):
+            flash("only trekkers can book treks", "warning")
+            return redirect(url_for("trek_detail", trek_id=trek_id))
+
+        trek = Treks.query.get_or_404(trek_id)
+
+        if trek.status != "Open":
+            flash("this trek is not open for booking", "warning")
+            return redirect(url_for("trek_detail", trek_id=trek_id))
+
+        if trek.available_slots <= 0:
+            flash("no slots available", "warning")
+            return redirect(url_for("trek_detail", trek_id=trek_id))
+
+        existing = Bookings.query.filter_by(
+            user_id=current_user.id, trek_id=trek.id, status="Booked"
+        ).first()
+        if existing:
+            flash("you have already booked this trek", "warning")
+            return redirect(url_for("trek_detail", trek_id=trek_id))
+
+        booking = Bookings(
+            user_id=current_user.id,
+            trek_id=trek.id,
+            amount=trek.cost,
+            status="Booked"
+        )
+        trek.available_slots -= 1
+        db.session.add(booking)
+        db.session.commit()
+
+        flash("booking confirmed", "success")
+        return redirect(url_for("booking_confirmation", booking_id=booking.id))
+
+    @app.route("/bookings/<int:booking_id>/confirmation")
+    @login_required
+    def booking_confirmation(booking_id):
+        booking = Bookings.query.get_or_404(booking_id)
+        if booking.user_id != current_user.id:
+            abort(403)
+        return render_template("booking_confirmation.html", booking=booking)
+    
+    @app.route("/bookings/<int:booking_id>/cancel", methods=["POST"])
+    @login_required
+    def cancel_booking(booking_id):
+        booking = Bookings.query.get_or_404(booking_id)
+        if booking.user_id != current_user.id:
+            abort(403)
+
+        if booking.status == "Cancelled":
+            flash("booking already cancelled", "warning")
+            return redirect(url_for("dashboard"))
+
+        booking.status = "Cancelled"
+        booking.trek.available_slots += 1
+        db.session.commit()
+        flash("booking cancelled", "success")
+        return redirect(url_for("dashboard"))
+    
+    @app.route("/profile")
+    @login_required
+    def dashboard():
+        if isinstance(current_user, Staffs) or isinstance(current_user, Admins):
+            abort(403)
+
+        all_bookings = Bookings.query.filter_by(user_id=current_user.id).all()
+        active_bookings = Bookings.query.filter_by(user_id=current_user.id, status="Booked").all()
+        completed_count = Bookings.query.filter_by(user_id=current_user.id, status="Completed").count()
+
+        recent_history = Bookings.query.filter_by(user_id=current_user.id)\
+            .order_by(Bookings.booking_date.desc()).limit(5).all()
+
+        return render_template(
+            "dashboard.html",
+            total_booked=len(all_bookings),
+            active_bookings=active_bookings,
+            active_count=len(active_bookings),
+            completed_count=completed_count,
+            recent_history=recent_history
+        )
+    
+    @app.route("/profile/edit", methods=["GET", "POST"])
+    @login_required
+    def edit_profile():
+        if isinstance(current_user, Staffs) or isinstance(current_user, Admins):
+            abort(403)
+
+        if request.method == "POST":
+            fullname = request.form.get("fullname")
+            phone = request.form.get("phone")
+            emergency = request.form.get("emergency")
+
+            if not fullname or not phone or not emergency:
+                flash("please fill all fields", "warning")
+                return redirect(url_for("edit_profile"))
+
+            current_user.full_name = fullname
+            current_user.phone_no = phone
+            current_user.emergency_contact = emergency
+            db.session.commit()
+            flash("profile updated", "success")
+            return redirect(url_for("dashboard"))
+
+        return render_template("edit_profile.html", user=current_user)
+    
+
+    @app.route("/profile/history")
+    @login_required
+    def full_history():
+        if isinstance(current_user, Staffs) or isinstance(current_user, Admins):
+            abort(403)
+
+        bookings = Bookings.query.filter_by(user_id=current_user.id)\
+            .order_by(Bookings.booking_date.desc()).all()
+        return render_template("history.html", bookings=bookings)
+    
+
+
+
     @app.route("/register/staff",methods=["GET","POST"])
     def staff_register():
         if request.method == "POST":
@@ -483,10 +630,27 @@ def init(app):
     
 
     @app.route("/admin/bookings")
+    @login_required
+    @admin_required
     def admin_bookings():
-        ...
-    @app.route("/admin/analytics")
-    def admin_analytics():
-        ...
+        page = request.args.get("page", 1, type=int)
+        pagination = Bookings.query.order_by(Bookings.booking_date.desc()).paginate(page=page, per_page=10, error_out=False)
+        return render_template("admin/bookings.html", bookings=pagination.items, pagination=pagination)
+    
 
-        
+
+    @app.route("/staff/dashboard")
+    @login_required
+    @staff_required
+    def staff_dashboard():
+        assigned_treks = Treks.query.filter_by(assigned_staff_id=current_user.id).all()
+        total_participants = sum(len(trek.bookings) for trek in assigned_treks)
+        active_count = sum(1 for trek in assigned_treks if trek.status == "Open")
+
+        return render_template(
+            "staff/dashboard.html",
+            assigned_treks=assigned_treks,
+            total_participants=total_participants,
+            active_count=active_count
+        )
+    

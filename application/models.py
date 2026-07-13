@@ -63,6 +63,7 @@ class Treks(db.Model):
     progress = db.Column(db.String(20), default="Not Started")
     staff_notes = db.Column(db.Text)
     assigned_staff_id = db.Column(db.Integer, db.ForeignKey("staffs.id"))
+    assigned_staff = db.relationship("Staffs", backref="assigned_treks")
 
 
 class Bookings(db.Model):

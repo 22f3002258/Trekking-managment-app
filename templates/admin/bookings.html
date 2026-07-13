@@ -1,0 +1,33 @@
+{% extends "admin/layout_admin.html" %}
+{% block title %}All Bookings{% endblock %}
+{% block main %}
+<h3>All Bookings</h3>
+<table class="table">
+    <thead><tr><th>Booking ID</th><th>User</th><th>Trek</th><th>Date</th><th>Status</th></tr></thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>B{{ "%03d"|format(booking.id) }}</td>
+            <td>{{ booking.user.full_name }}</td>
+            <td>{{ booking.trek.trek_name }}</td>
+            <td>{{ booking.booking_date.strftime('%b %d, %Y') }}</td>
+            <td>{{ booking.status }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No bookings yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        {% if pagination.has_prev %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('admin_bookings', page=pagination.prev_num) }}">Previous</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">Page {{ pagination.page }} of {{ pagination.pages }}</span></li>
+        {% if pagination.has_next %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('admin_bookings', page=pagination.next_num) }}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Booking Confirmed{% endblock %}
+{% block main %}
+<div class="container mt-4 text-center">
+    <h1>✅ Booking Confirmed!</h1>
+    <p>Booking ID: B{{ "%03d"|format(booking.id) }}</p>
+    <p>🏔 Trek: {{ booking.trek.trek_name }}</p>
+    <p>👤 Trekker: {{ current_user.full_name }}</p>
+    <p>📅 Booked On: {{ booking.booking_date.strftime('%b %d, %Y') }}</p>
+    <p>💰 Amount: ₹{{ booking.amount }}</p>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">View My Bookings</a>
+    <a href="{{ url_for('browse_treks') }}" class="btn btn-secondary">Browse More Treks</a>
+</div>
+{% endblock %}

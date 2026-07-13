@@ -1,19 +1,22 @@
 {% extends "layout.html" %}
-{% block title %}
-login
-{% endblock%}
-{% block main%}
-    <form action="{{url_for('login')}}" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="email" placeholder="Email" type="text">
+{% block title %}Login{% endblock %}
+{% block main %}
+<div class="container mt-4" style="max-width:400px;">
+    <h3>Sign in to your account</h3>
+    <form method="POST">
+        <div class="mb-2">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
+        <div class="mb-2">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required>
         </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
+        <button type="submit" class="btn btn-primary">Login</button>
     </form>
-    <p>Don't have an account?
+    <p class="mt-2">Don't have an account?
         <a href="{{ url_for('register') }}">Register as Trekker</a> |
         <a href="{{ url_for('staff_register') }}">Register as Staff</a>
     </p>
-{% endblock%}
+</div>
+{% endblock %}

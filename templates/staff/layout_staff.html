@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="d-flex">
+    <nav class="p-3 bg-dark text-white" style="width:220px; min-height:80vh;">
+        <h5>TrekManager Staff</h5>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('staff_dashboard') }}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+    <main class="p-4 flex-grow-1">
+        {% block staff_main %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

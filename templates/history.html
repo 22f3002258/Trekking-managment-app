@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}My Trek History{% endblock %}
+{% block main %}
+<div class="container mt-4">
+    <h3>My Trek History — {{ current_user.full_name }}</h3>
+    <table class="table">
+        <thead><tr><th>Booking ID</th><th>Trek</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>B{{ "%03d"|format(booking.id) }}</td>
+                <td>{{ booking.trek.trek_name }}</td>
+                <td>{{ booking.booking_date.strftime('%b %d, %Y') }}</td>
+                <td>{{ booking.status }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">No bookings yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ url_for('dashboard') }}">&larr; Back to Profile</a>
+</div>
+{% endblock %}
