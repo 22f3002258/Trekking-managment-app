@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title%} {% endblock %}</title>
+</head>
+<body>
+    <div class="d-flex">
+        <nav class="p-3 bg-dark text-white" style="width:220px; min-height:100vh;">
+            <h5>TrekManager Admin</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('manage_treks') }}">Treks</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('manage_staff') }}">Staff</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('manage_users') }}">Users</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('admin_bookings') }}">Bookings</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('admin_analytics') }}">Analytics</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        <main class="p-4 flex-grow-1">
+                  {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="container mt-3">
+                                    <div class="alert alert-{{ category }}">
+                                        {{ message }}
+                                    </div>
+                                    </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+            {% block main %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "admin/layout_admin.html" %}
+{%block title%} Dashboard {%endblock%}
+{% block main %}
+<h3>Welcome, Admin</h3>
+
+<div class="row mb-4">
+    <div class="col"><div class="border p-3 text-center"><h4>{{ total_treks }}</h4>Total Treks</div></div>
+    <div class="col"><div class="border p-3 text-center"><h4>{{ total_users }}</h4>Trekkers</div></div>
+    <div class="col"><div class="border p-3 text-center"><h4>{{ total_staff }}</h4>Staff</div></div>
+    <div class="col"><div class="border p-3 text-center"><h4>{{ total_bookings }}</h4>Bookings</div></div>
+</div>
+
+<h5>Pending Staff Approvals</h5>
+<table class="table">
+    <thead><tr><th>Name</th><th>Email</th><th>Action</th></tr></thead>
+    <tbody>
+        {% for staff in pending_staff %}
+        <tr>
+            <td>{{ staff.full_name }}</td>
+            <td>{{ staff.email }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('approve_staff', staff_id=staff.id) }}" style="display:inline;">
+                    <button class="btn btn-success btn-sm">Approve</button>
+                </form>
+                <form method="POST" action="{{ url_for('blacklist_staff', staff_id=staff.id) }}" style="display:inline;">
+                    <button class="btn btn-danger btn-sm">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3">No pending approvals</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "admin/layout_admin.html" %}
+{% block title%} create trek {%endblock%}
+{% block main %}
+    <h3>Create Trek</h3>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-2">
+            <label>Trek Name</label>
+            <input type="text" name="trek_name" class="form-control" required>
+        </div>
+        <div class="mb-2">
+            <label>Location</label>
+            <input type="text" name="location" class="form-control" required>
+        </div>
+        <div class="mb-2">
+            <label>Difficulty</label>
+            <select name="difficulty" class="form-control" required>
+                <option value="">Select</option>
+                <option value="Easy">Easy</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Hard">Hard</option>
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Start Date</label>
+            <input type="date" name="start_date" class="form-control" required>
+        </div>
+        <div class="mb-2">
+            <label>End Date</label>
+            <input type="date" name="end_date" class="form-control" required>
+        </div>
+        <div class="mb-2">
+            <label>Available Slots (Max Capacity)</label>
+            <input type="number" name="max_capacity" class="form-control" required min="1">
+        </div>
+        <div class="mb-2">
+            <label>Cost per Person (₹)</label>
+            <input type="number" name="cost" class="form-control" required min="0">
+        </div>
+        <div class="mb-2">
+            <label>Meeting Point</label>
+            <input type="text" name="meeting_point" class="form-control">
+        </div>
+        <div class="mb-2">
+            <label>Description</label>
+            <textarea name="description" class="form-control"></textarea>
+        </div>
+        <div class="mb-2">
+            <label>Trek Image</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-success">Save Trek</button>
+    </form>
+{% endblock %}

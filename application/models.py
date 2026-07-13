@@ -59,6 +59,7 @@ class Treks(db.Model):
     meeting_point = db.Column(db.String(150))
     description = db.Column(db.Text)
     status = db.Column(db.String(20), default="Pending")
+    image_filename = db.Column(db.String(255))
     progress = db.Column(db.String(20), default="Not Started")
     staff_notes = db.Column(db.Text)
     assigned_staff_id = db.Column(db.Integer, db.ForeignKey("staffs.id"))
@@ -73,3 +74,5 @@ class Bookings(db.Model):
     booking_date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     amount = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(20), nullable=False, default="Booked") 
+    user = db.relationship("Users", backref="bookings")
+    trek = db.relationship("Treks", backref="bookings")

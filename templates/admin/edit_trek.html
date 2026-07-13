@@ -1,0 +1,78 @@
+{% extends "admin/layout_admin.html" %}
+{% block title%} edit trek {%endblock%}
+{% block main %}
+    <h3>Edit Trek — {{ trek.trek_name }}</h3>
+
+    {% if trek.image_filename %}
+        <img src="{{ url_for('static', filename='uploads/treks/' + trek.image_filename) }}" width="200" class="mb-2"><br>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-2">
+            <label>Trek Name</label>
+            <input type="text" name="trek_name" class="form-control" value="{{ trek.trek_name }}" required>
+        </div>
+        <div class="mb-2">
+            <label>Location</label>
+            <input type="text" name="location" class="form-control" value="{{ trek.location }}" required>
+        </div>
+        <div class="mb-2">
+            <label>Difficulty</label>
+            <select name="difficulty" class="form-control" required>
+                {% for d in ["Easy", "Moderate", "Hard"] %}
+                    <option value="{{ d }}" {% if trek.difficulty == d %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Start Date</label>
+            <input type="date" name="start_date" class="form-control" value="{{ trek.start_date.strftime('%Y-%m-%d') }}" required>
+        </div>
+        <div class="mb-2">
+            <label>End Date</label>
+            <input type="date" name="end_date" class="form-control" value="{{ trek.end_date.strftime('%Y-%m-%d') }}" required>
+        </div>
+        <div class="mb-2">
+            <label>Max Capacity</label>
+            <input type="number" name="max_capacity" class="form-control" value="{{ trek.max_capacity }}" required>
+        </div>
+        <div class="mb-2">
+            <label>Cost per Person</label>
+            <input type="number" name="cost" class="form-control" value="{{ trek.cost }}" required>
+        </div>
+        <div class="mb-2">
+            <label>Meeting Point</label>
+            <input type="text" name="meeting_point" class="form-control" value="{{ trek.meeting_point or '' }}">
+        </div>
+        <div class="mb-2">
+            <label>Trek Status</label>
+            <select name="status" class="form-control" required>
+                {% for s in ["Pending", "Approved", "Open", "Closed", "Completed"] %}
+                    <option value="{{ s }}" {% if trek.status == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Assign Staff</label>
+            <select name="assigned_staff_id" class="form-control">
+                <option value="">-- None --</option>
+                {% for staff in approved_staff %}
+                    <option value="{{ staff.id }}" {% if trek.assigned_staff_id == staff.id %}selected{% endif %}>{{ staff.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Description</label>
+            <textarea name="description" class="form-control">{{ trek.description or '' }}</textarea>
+        </div>
+        <div class="mb-2">
+            <label>Replace Image (optional)</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-success">Save Changes</button>
+    </form>
+
+    <form method="POST" action="{{ url_for('delete_trek', trek_id=trek.id) }}" class="mt-2" onsubmit="return confirm('Are you sure?');">
+        <button class="btn btn-danger">Delete Trek</button>
+    </form>
+{% endblock %}
