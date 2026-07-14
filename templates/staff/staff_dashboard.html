@@ -1,24 +1,40 @@
 {% extends "staff/layout_staff.html" %}
 {% block title %}Staff Dashboard{% endblock %}
-{% block staff_main %}
-<h3>{{ current_user.full_name }}</h3>
-<p>Staff ID: S{{ "%03d"|format(current_user.id) }} · {{ current_user.approval_status }}</p>
+{% block main %}
+<div class="container m-2">
+    <h3>{{ current_user.full_name }}</h3>
+    <p>Staff ID: S{{ "%03d"|format(current_user.id) }} · {{ current_user.approval_status }}</p>
 
-<div class="row mb-4">
-    <div class="col"><div class="border p-3 text-center"><h4>{{ assigned_treks|length }}</h4>Assigned Treks</div></div>
-    <div class="col"><div class="border p-3 text-center"><h4>{{ total_participants }}</h4>Participants</div></div>
-    <div class="col"><div class="border p-3 text-center"><h4>{{ active_count }}</h4>Active</div></div>
-</div>
+    <div class="row mb-4">
+        <div class="col">
+            <div class="border p-3 text-center">
+                <h4>{{ assigned_treks|length }}</h4>Assigned Treks
+            </div>
+        </div>
+        <div class="col">
+            <div class="border p-3 text-center">
+                <h4>{{ total_participants }}</h4>Participants
+            </div>
+        </div>
+        <div class="col">
+            <div class="border p-3 text-center">
+                <h4>{{ active_count }}</h4>Active
+            </div>
+        </div>
+    </div>
 
-<h5>My Assigned Treks</h5>
-{% for trek in assigned_treks %}
-<div class="border p-3 mb-2">
-    <strong>{{ trek.trek_name }}</strong> <span class="badge bg-secondary">{{ trek.status }}</span>
-    <p>📍 {{ trek.location }} · 🗓 {{ trek.start_date.strftime('%b %d') }} – {{ trek.end_date.strftime('%b %d') }} · 🧗 {{ trek.difficulty }}</p>
-    <a href="{{ url_for('staff_participants', trek_id=trek.id) }}" class="btn btn-sm btn-secondary">View Participants</a>
-    <a href="{{ url_for('staff_manage_trek', trek_id=trek.id) }}" class="btn btn-sm btn-primary">Manage</a>
+    <h5>My Assigned Treks</h5>
+    {% for trek in assigned_treks %}
+    <div class="border p-3 mb-2">
+        <strong>{{ trek.trek_name }}</strong> <span class="badge bg-secondary">{{ trek.status }}</span>
+        <p>📍 {{ trek.location }} · 🗓 {{ trek.start_date.strftime('%b %d') }} – {{ trek.end_date.strftime('%b %d') }} ·
+            🧗 {{ trek.difficulty }}</p>
+        <a href="{{ url_for('staff_participants', trek_id=trek.id) }}" class="btn btn-sm btn-secondary">View
+            Participants</a>
+        <a href="{{ url_for('staff_manage_trek', trek_id=trek.id) }}" class="btn btn-sm btn-primary">Manage</a>
+    </div>
+    {% else %}
+    <p>No treks assigned yet.</p>
+    {% endfor %}
+    {% endblock %}
 </div>
-{% else %}
-<p>No treks assigned yet.</p>
-{% endfor %}
-{% endblock %}

@@ -2,28 +2,29 @@
 {% block title %}{{ trek.trek_name }}{% endblock %}
 {% block main %}
 <div class="container mt-4">
-    <h3>{{ trek.trek_name }} <span class="badge bg-secondary">{{ trek.difficulty }}</span> <span class="badge bg-success">{{ trek.status }}</span></h3>
+    <h4>{{ trek.trek_name }} </h4>
 
     {% if trek.image_filename %}
-        <img src="{{ url_for('static', filename='uploads/treks/' + trek.image_filename) }}" width="300" class="mb-2"><br>
+    <img src="{{ url_for('static', filename='uploads/treks/' + trek.image_filename) }}" width="300" class="mb-2"><br>
     {% endif %}
-
-    <p>📍 Location: {{ trek.location }}</p>
-    <p>⏱ Duration: {{ (trek.end_date - trek.start_date).days }} Days</p>
-    <p>📅 {{ trek.start_date.strftime('%b %d, %Y') }} – {{ trek.end_date.strftime('%b %d, %Y') }}</p>
-    <p>🪑 Slots Left: {{ trek.available_slots }} / {{ trek.max_capacity }}</p>
-    {% if trek.assigned_staff %}<p>👤 Guide: {{ trek.assigned_staff.full_name }}</p>{% endif %}
-    <p>💰 Cost: ₹{{ trek.cost }} / person</p>
+    <span class="badge bg-secondary">{{ trek.difficulty }}</span> <span class="badge bg-success">{{ trek.status
+        }}</span>
     <p>{{ trek.description }}</p>
+    <p>Location: {{ trek.location }}</p>
+    <p>Duration: {{ (trek.end_date - trek.start_date).days }} Days</p>
+    <p>{{ trek.start_date.strftime('%b %d, %Y') }} to {{ trek.end_date.strftime('%b %d, %Y') }}</p>
+    <p>Slots Left: {{ trek.available_slots }} / {{ trek.max_capacity }}</p>
+    {% if trek.assigned_staff %}<p>Guide: {{ trek.assigned_staff.full_name }}</p>{% endif %}
+    <p>Cost: ₹{{ trek.cost }} / person</p>
 
     {% if current_user.is_authenticated and trek.status == "Open" and trek.available_slots > 0 %}
-        <form method="POST" action="{{ url_for('book_trek', trek_id=trek.id) }}">
-            <button class="btn btn-success">Confirm Booking</button>
-        </form>
+    <form method="POST" action="{{ url_for('book_trek', trek_id=trek.id) }}">
+        <button class="btn btn-success">Confirm Booking</button>
+    </form>
     {% elif not current_user.is_authenticated %}
-        <a href="{{ url_for('login') }}" class="btn btn-primary">Login to Book</a>
+    <a href="{{ url_for('login') }}" class="btn btn-primary">Login to Book</a>
     {% else %}
-        <p class="text-danger">⚠️ Booking disabled when trek is closed or slots are full</p>
+    <p class="text-danger">⚠️Booking disabled when trek is closed or slots are full</p>
     {% endif %}
 
     <a href="{{ url_for('browse_treks') }}">&larr; Back to Treks</a>

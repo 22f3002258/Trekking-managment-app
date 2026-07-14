@@ -1,6 +1,7 @@
 {% extends "admin/layout_admin.html" %}
 {% block title%} create trek {%endblock%}
 {% block main %}
+<div class="container m-2 ">
     <h3>Create Trek</h3>
     <form method="POST" enctype="multipart/form-data">
         <div class="mb-2">
@@ -45,9 +46,20 @@
             <textarea name="description" class="form-control"></textarea>
         </div>
         <div class="mb-2">
+            <label>Assign Staff</label>
+            <select name="assigned_staff_id" class="form-control">
+                <option value="">-- None --</option>
+                {% for staff in approved_staff %}
+                <option value="{{ staff.id }}" {% if trek.assigned_staff_id==staff.id %}selected{% endif %}>{{
+                    staff.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-2">
             <label>Trek Image</label>
             <input type="file" name="image" class="form-control" accept="image/*">
         </div>
         <button type="submit" class="btn btn-success">Save Trek</button>
     </form>
-{% endblock %}
+    {% endblock %}
+</div>

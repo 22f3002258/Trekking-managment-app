@@ -7,3 +7,6 @@
     height: 400px;
     object-fit: cover;
 }
+.login,.register{
+    max-width: 400px;
+}

@@ -23,9 +23,9 @@
                 {% if trek.image_filename %}
                     <img src="{{ url_for('static', filename='uploads/treks/' + trek.image_filename) }}" class="img-fluid mb-2">
                 {% endif %}
-                <strong>{{ trek.trek_name }}</strong> <span class="badge bg-info">{{ trek.difficulty }}</span>
-                <p>📍 {{ trek.location }} · ⏱ {{ (trek.end_date - trek.start_date).days }} days</p>
-                <p>🪑 {{ trek.available_slots }} slots left · ₹{{ trek.cost }}</p>
+                <h3>{{ trek.trek_name }}</h3> <span class="badge bg-info">{{ trek.difficulty }}</span>
+                <p>{{ trek.location }} · ⏱ {{ (trek.end_date - trek.start_date).days }} days</p>
+                <p>{{ trek.available_slots }} slots left · ₹{{ trek.cost }}</p>
                 <a href="{{ url_for('trek_detail', trek_id=trek.id) }}" class="btn btn-sm btn-secondary">Details</a>
             </div>
         </div>

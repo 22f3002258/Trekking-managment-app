@@ -5,8 +5,8 @@ from flask_login import current_user
 from application.models import Admins, Staffs
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = os.path.join("application","static","uploads","treks")
-ALLOWED_EXTENSIONS={"png","jpg","jpeg"}
+UPLOAD_FOLDER = os.path.join("static","uploads","treks")
+ALLOWED_EXTENSIONS={"png","jpg","jpeg","webp"}
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".",1)[1].lower() in ALLOWED_EXTENSIONS

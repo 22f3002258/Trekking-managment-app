@@ -1,28 +1,40 @@
 {% extends "staff/layout_staff.html" %}
 {% block title %}Participants{% endblock %}
-{% block staff_main %}
-<h3>{{ trek.trek_name }} — Participants</h3>
-<p>{{ trek.bookings|length }} / {{ trek.max_capacity }} slots filled</p>
+{% block main %}
+<div class="container m-2">
+    <h3>{{ trek.trek_name }} — Participants</h3>
+    <p>{{ trek.bookings|length }} / {{ trek.max_capacity }} slots filled</p>
 
-<table class="table">
-    <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Booking Status</th></tr></thead>
-    <tbody>
-        {% for booking in bookings %}
-        <tr>
-            <td>U{{ "%03d"|format(booking.user.id) }}</td>
-            <td>{{ booking.user.full_name }}</td>
-            <td>{{ booking.user.phone_no }}</td>
-            <td>{{ booking.status }}</td>
-        </tr>
-        {% else %}
-        <tr><td colspan="4">No participants yet.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Booking Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>U{{ "%03d"|format(booking.user.id) }}</td>
+                <td>{{ booking.user.full_name }}</td>
+                <td>{{ booking.user.phone_no }}</td>
+                <td>{{ booking.status }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No participants yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-{% if trek.status != "Completed" %}
-<form method="POST" action="{{ url_for('mark_trek_completed', trek_id=trek.id) }}" onsubmit="return confirm('Mark this trek completed?');">
-    <button class="btn btn-success">Mark Trek Completed</button>
-</form>
-{% endif %}
-{% endblock %}
+    {% if trek.status != "Completed" %}
+    <form method="POST" action="{{ url_for('mark_trek_completed', trek_id=trek.id) }}"
+        onsubmit="return confirm('Mark this trek completed?');">
+        <button class="btn btn-success">Mark Trek Completed</button>
+    </form>
+    {% endif %}
+    {% endblock %}
+</div>

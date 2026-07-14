@@ -21,7 +21,7 @@ def init(app):
         existing_admin = Admins.query.filter_by(email="admin").first()
         if not existing_admin:
             admin = Admins(
-                email="admin",
+                email="admin@trekmanager.com",
                 password_hash=generate_password_hash("admin123")
             )
             db.session.add(admin)
@@ -151,7 +151,7 @@ def init(app):
     
     @app.route("/treks")
     def browse_treks():
-        difficulty=request.args.get("difficulty","ALL")
+        difficulty=request.args.get("difficulty","All")
         search_query=request.args.get("q","")
         page = request.args.get("page", 1, type=int)
 
@@ -413,7 +413,7 @@ def init(app):
         staff.approval_status="approved"
         db.session.commit()
         flash("f{staff.full_name} restored","success")
-        return redirect(url_for("manage_Staff"))
+        return redirect(url_for("manage_staff"))
     
     #staff list search pagination
     @app.route("/admin/staff")
@@ -611,7 +611,7 @@ def init(app):
             flash("trek updated", "success")
             return redirect(url_for("manage_treks"))
         approved_staff = Staffs.query.filter_by(approval_status="approved").all()
-        return render_template("admin/edit_trek.html", trek=trek, approval_staff=approved_staff)
+        return render_template("admin/edit_trek.html", trek=trek, approved_staff=approved_staff)
     
     @app.route("/admin/treks/<int:trek_id>/delete", methods=["POST"])
     @login_required
@@ -639,6 +639,8 @@ def init(app):
     
 
 
+    #staff starts from here
+
     @app.route("/staff/dashboard")
     @login_required
     @staff_required
@@ -648,9 +650,72 @@ def init(app):
         active_count = sum(1 for trek in assigned_treks if trek.status == "Open")
 
         return render_template(
-            "staff/dashboard.html",
+            "staff/staff_dashboard.html",
             assigned_treks=assigned_treks,
             total_participants=total_participants,
             active_count=active_count
         )
-    
+
+
+    @app.route("/staff/treks/<int:trek_id>/manage", methods=["GET", "POST"])
+    @login_required
+    @staff_required
+    def staff_manage_trek(trek_id):
+        trek = Treks.query.get_or_404(trek_id)
+
+        if trek.assigned_staff_id != current_user.id:
+            abort(403)
+
+        if request.method == "POST":
+            available_slots = request.form.get("available_slots")
+            status = request.form.get("status")
+            progress = request.form.get("progress")
+            staff_notes = request.form.get("staff_notes")
+
+            if available_slots:
+                slots = int(available_slots)
+                if slots > trek.max_capacity:
+                    flash("available slots cannot exceed max capacity", "warning")
+                    return redirect(url_for("staff_manage_trek", trek_id=trek_id))
+                trek.available_slots = slots
+
+            if status:
+                trek.status = status
+            if progress:
+                trek.progress = progress
+            trek.staff_notes = staff_notes
+
+            db.session.commit()
+            flash("trek updated", "success")
+            return redirect(url_for("staff_dashboard"))
+
+        return render_template("staff/manage_trek.html", trek=trek)
+
+
+    @app.route("/staff/treks/<int:trek_id>/participants")
+    @login_required
+    @staff_required
+    def staff_participants(trek_id):
+        trek = Treks.query.get_or_404(trek_id)
+
+        if trek.assigned_staff_id != current_user.id:
+            abort(403)
+
+        bookings = Bookings.query.filter_by(trek_id=trek.id).all()
+        return render_template("staff/participants.html", trek=trek, bookings=bookings)
+
+
+    @app.route("/staff/treks/<int:trek_id>/complete", methods=["POST"])
+    @login_required
+    @staff_required
+    def mark_trek_completed(trek_id):
+        trek = Treks.query.get_or_404(trek_id)
+
+        if trek.assigned_staff_id != current_user.id:
+            abort(403)
+
+        trek.status = "Completed"
+        trek.progress = "Completed"
+        db.session.commit()
+        flash("trek marked as completed", "success")
+        return redirect(url_for("staff_dashboard"))        

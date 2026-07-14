@@ -1,10 +1,11 @@
 {% extends "admin/layout_admin.html" %}
 {% block title%} edit trek {%endblock%}
 {% block main %}
+<div class="container m-3">
     <h3>Edit Trek — {{ trek.trek_name }}</h3>
 
     {% if trek.image_filename %}
-        <img src="{{ url_for('static', filename='uploads/treks/' + trek.image_filename) }}" width="200" class="mb-2"><br>
+    <img src="{{ url_for('static', filename='uploads/treks/' + trek.image_filename) }}" width="200" class="mb-2"><br>
     {% endif %}
 
     <form method="POST" enctype="multipart/form-data">
@@ -20,17 +21,19 @@
             <label>Difficulty</label>
             <select name="difficulty" class="form-control" required>
                 {% for d in ["Easy", "Moderate", "Hard"] %}
-                    <option value="{{ d }}" {% if trek.difficulty == d %}selected{% endif %}>{{ d }}</option>
+                <option value="{{ d }}" {% if trek.difficulty==d %}selected{% endif %}>{{ d }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="mb-2">
             <label>Start Date</label>
-            <input type="date" name="start_date" class="form-control" value="{{ trek.start_date.strftime('%Y-%m-%d') }}" required>
+            <input type="date" name="start_date" class="form-control" value="{{ trek.start_date.strftime('%Y-%m-%d') }}"
+                required>
         </div>
         <div class="mb-2">
             <label>End Date</label>
-            <input type="date" name="end_date" class="form-control" value="{{ trek.end_date.strftime('%Y-%m-%d') }}" required>
+            <input type="date" name="end_date" class="form-control" value="{{ trek.end_date.strftime('%Y-%m-%d') }}"
+                required>
         </div>
         <div class="mb-2">
             <label>Max Capacity</label>
@@ -47,8 +50,8 @@
         <div class="mb-2">
             <label>Trek Status</label>
             <select name="status" class="form-control" required>
-                {% for s in ["Pending", "Approved", "Open", "Closed", "Completed"] %}
-                    <option value="{{ s }}" {% if trek.status == s %}selected{% endif %}>{{ s }}</option>
+                {% for s in ["Open", "Closed", "Completed"] %}
+                <option value="{{ s }}" {% if trek.status==s %}selected{% endif %}>{{ s }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -57,7 +60,8 @@
             <select name="assigned_staff_id" class="form-control">
                 <option value="">-- None --</option>
                 {% for staff in approved_staff %}
-                    <option value="{{ staff.id }}" {% if trek.assigned_staff_id == staff.id %}selected{% endif %}>{{ staff.full_name }}</option>
+                <option value="{{ staff.id }}" {% if trek.assigned_staff_id==staff.id %}selected{% endif %}>{{
+                    staff.full_name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -72,7 +76,9 @@
         <button type="submit" class="btn btn-success">Save Changes</button>
     </form>
 
-    <form method="POST" action="{{ url_for('delete_trek', trek_id=trek.id) }}" class="mt-2" onsubmit="return confirm('Are you sure?');">
+    <form method="POST" action="{{ url_for('delete_trek', trek_id=trek.id) }}" class="mt-2"
+        onsubmit="return confirm('Are you sure?');">
         <button class="btn btn-danger">Delete Trek</button>
     </form>
-{% endblock %}
+    {% endblock %}
+</div>

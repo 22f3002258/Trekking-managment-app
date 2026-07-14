@@ -1,32 +1,32 @@
 {% extends "layout.html" %}
 {% block title %}Trekker Registration{% endblock %}
 {% block main %}
-<div class="container mt-4" style="max-width:450px;">
+<div class="container mt-4 register">
     <h3>Trekker Registration</h3>
     <form method="POST">
         <div class="mb-2">
             <label>Full Name</label>
-            <input type="text" name="fullname" class="form-control" required>
+            <input type="text" name="fullname" class="form-control" placeholder="Full name"required>
         </div>
         <div class="mb-2">
             <label>Email</label>
-            <input type="email" name="email" class="form-control" required>
+            <input type="email" name="email" class="form-control" required placeholder="Email">
         </div>
         <div class="mb-2">
             <label>Phone</label>
-            <input type="tel" name="phone" class="form-control" required>
+            <input type="tel" name="phone" class="form-control" required placeholder="Phone">
         </div>
         <div class="mb-2">
             <label>Password</label>
-            <input type="password" name="password" class="form-control" required>
+            <input type="password" name="password" class="form-control" required placeholder="Password">
         </div>
         <div class="mb-2">
             <label>Confirm Password</label>
-            <input type="password" name="confirmation" class="form-control" required>
+            <input type="password" name="confirmation" class="form-control" required placeholder="Confirm password">
         </div>
         <div class="mb-2">
             <label>Emergency Contact</label>
-            <input type="tel" name="emergency" class="form-control" required>
+            <input type="tel" name="emergency" class="form-control" required placeholder="Emergency contact">
         </div>
         <button type="submit" class="btn btn-primary">Register</button>
     </form>

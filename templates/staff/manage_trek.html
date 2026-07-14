@@ -1,34 +1,37 @@
 {% extends "staff/layout_staff.html" %}
 {% block title %}Manage Trek{% endblock %}
-{% block staff_main %}
-<h3>{{ trek.trek_name }}</h3>
-<p>Trek ID: T{{ "%03d"|format(trek.id) }} · Assigned to you</p>
+{% block main %}
+<div class="container m-2">
+    <h3>{{ trek.trek_name }}</h3>
+    <p>Trek ID: T{{ "%03d"|format(trek.id) }} · Assigned to you</p>
 
-<form method="POST">
-    <div class="mb-2">
-        <label>Available Slots</label>
-        <input type="number" name="available_slots" class="form-control" value="{{ trek.available_slots }}" min="0" max="{{ trek.max_capacity }}">
-    </div>
-    <div class="mb-2">
-        <label>Trek Status</label>
-        <select name="status" class="form-control">
-            {% for s in ["Open", "Closed", "Completed"] %}
-                <option value="{{ s }}" {% if trek.status == s %}selected{% endif %}>{{ s }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="mb-2">
-        <label>Trek Progress</label>
-        <select name="progress" class="form-control">
-            {% for p in ["Not Started", "In Progress", "Completed"] %}
-                <option value="{{ p }}" {% if trek.progress == p %}selected{% endif %}>{{ p }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="mb-2">
-        <label>Staff Notes</label>
-        <textarea name="staff_notes" class="form-control">{{ trek.staff_notes or '' }}</textarea>
-    </div>
-    <button type="submit" class="btn btn-success">Update Trek</button>
-</form>
-{% endblock %}
+    <form method="POST">
+        <div class="mb-2">
+            <label>Available Slots</label>
+            <input type="number" name="available_slots" class="form-control" value="{{ trek.available_slots }}" min="0"
+                max="{{ trek.max_capacity }}">
+        </div>
+        <div class="mb-2">
+            <label>Trek Status</label>
+            <select name="status" class="form-control">
+                {% for s in ["Open", "Closed", "Completed"] %}
+                <option value="{{ s }}" {% if trek.status==s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Trek Progress</label>
+            <select name="progress" class="form-control">
+                {% for p in ["Not Started", "In Progress", "Completed"] %}
+                <option value="{{ p }}" {% if trek.progress==p %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Staff Notes</label>
+            <textarea name="staff_notes" class="form-control">{{ trek.staff_notes or '' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Update Trek</button>
+    </form>
+    {% endblock %}
+</div>

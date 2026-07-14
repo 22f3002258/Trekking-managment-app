@@ -19,7 +19,7 @@
                 <p>Explore breathtaking trekking destinations, book your favorite trails with ease, and enjoy a safe, memorable journey guided by experienced trek leaders</p>
                 <a href="{{ url_for('browse_treks') }}" class="btn btn-warning">Browse treks</a>
                 {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('staff_register') }}" class="btn btn-outline-light">Become guide</a>
+                <a href="{{ url_for('staff_register') }}" class="btn btn-light">Become guide</a>
                 {% endif %}
             </div>
         </div>
@@ -30,7 +30,7 @@
                 <p>Explore breathtaking trekking destinations, book your favorite trails with ease, and enjoy a safe, memorable journey guided by experienced trek leaders</p>
                 <a href="{{ url_for('browse_treks') }}" class="btn btn-warning">Browse treks</a>
                 {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('staff_register') }}" class="btn btn-outline-light">Become guide</a>
+                <a href="{{ url_for('staff_register') }}" class="btn btn-light">Become guide</a>
                 {% endif %}
             </div>
         </div>
@@ -41,7 +41,7 @@
                 <p>Explore breathtaking trekking destinations, book your favorite trails with ease, and enjoy a safe, memorable journey guided by experienced trek leaders</p>
                 <a href="{{ url_for('browse_treks') }}" class="btn btn-warning">Browse treks</a>
                 {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('staff_register') }}" class="btn btn-outline-light">Become guide</a>
+                <a href="{{ url_for('staff_register') }}" class="btn btn-light">Become guide</a>
                 {% endif %}
             </div>
         </div>
@@ -55,18 +55,24 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+    <div class="row mb-4 mt-2 m-lg-2 p-4">
+            <div class="col"><div class="border p-3 text-center"><h4>{{ total_booked }}</h4>Booked</div></div>
+            <div class="col"><div class="border p-3 text-center"><h4>{{ active_count }}</h4>Active</div></div>
+            <div class="col"><div class="border p-3 text-center"><h4>{{ completed_count }}</h4>Completed</div></div>
+        </div>
 
 <div class="container mt-4">
     <h4>Featured treks</h4>
     <div class="row">
         {% for trek in featured_treks %}
         <div class="card m-lg-4" style="width:18rem;">
-            <img src="{{url_for('static', filename='uploads/treks' + trek.image_filename)}}" class="card-img-top">
+            <img src="{{url_for('static', filename='uploads/treks/' + trek.image_filename)}}" class="card-img-top">
             <div class="card-body">
                 <h5 class="card-title">{{ trek.trek_name }}</h5> <span class="badge bg-info">{{ trek.difficulty
                     }}</span>
-                <p>{{ trek.location }}</p>
-                <p>₹{{ trek.cost }}</p>
+                <p>Description :{{trek.description }}</p>
+                <p>Location :{{ trek.location }}</p>
+                <p>Cost : ₹{{ trek.cost }}</p>
                 <a href="{{ url_for('trek_detail', trek_id=trek.id) }}" class="btn btn-sm btn-secondary">Details</a>
             </div>
         </div>
