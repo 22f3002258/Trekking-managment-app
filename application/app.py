@@ -412,7 +412,7 @@ def init(app):
         staff=Staffs.query.get_or_404(staff_id)
         staff.approval_status="approved"
         db.session.commit()
-        flash("f{staff.full_name} restored","success")
+        flash(f"{staff.full_name} restored","success")
         return redirect(url_for("manage_staff"))
     
     #staff list search pagination
