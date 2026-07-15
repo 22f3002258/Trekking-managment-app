@@ -416,10 +416,24 @@ def init(app):
         return redirect(url_for("manage_staff"))
     
     #staff list search pagination
-    @app.route("/admin/staff")
+    @app.route("/admin/staff",methods=["GET","POST"])
     @login_required
     @admin_required
     def manage_staff():
+        if request.method=="POST":
+            staff_id=request.form.get("selected_staff_id")
+            trek_id=request.form.get("selected_trek_id")
+            if not staff_id or not trek_id:
+                flash("please select staff and trek","warning")
+                return redirect(url_for("manage_staff"))
+            
+            staff=Staffs.query.filter_by(id=int(staff_id)).first()
+            trek=Treks.query.filter_by(id=int(trek_id)).first()
+            trek.assigned_staff_id=int(staff_id)
+            db.session.commit()
+            flash(f"assigned {staff.full_name} to {trek.trek_name}","success")
+            return redirect(url_for("manage_staff"))
+
         search_query = request.args.get("q","")
         page=request.args.get("page",1,type=int)
 
@@ -431,8 +445,11 @@ def init(app):
                     Staffs.email.ilike(f"%{search_query}%")
                 )
             )
+        
+        approved_staff = Staffs.query.filter_by(approval_status="approved").all()
+        opened_trek = Treks.query.filter_by(status="Open").all()
         pagination = query.paginate(page=page,per_page=5,error_out=False)
-        return render_template("admin/staffs.html",staff_list=pagination.items, pagination=pagination, search_query=search_query)
+        return render_template("admin/staffs.html",staff_list=pagination.items, pagination=pagination, search_query=search_query,approved_staffs=approved_staff,opened_trek=opened_trek)
     
     #user list and search 
     @app.route("/admin/users")

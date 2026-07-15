@@ -41,6 +41,25 @@
             {% endfor %}
         </tbody>
     </table>
+    
+        <h4>Assign Staff</h4>
+        <form method="POST">
+            <label>Select Trek</label>
+            <select name="selected_trek_id" class="form-control">
+                <option value="">None</option>
+                {%for trek in opened_trek %}
+                <option value="{{trek.id}}">{{trek.trek_name}}</option>
+                {%endfor%}
+            </select>
+            <label>Select Staff</label>
+            <select name="selected_staff_id" class="form-control">
+                <option value="">None</option>
+                {% for staff in approved_staffs%}
+                <option value="{{staff.id}}">{{staff.full_name}}</option>
+                {%endfor%}
+            </select>
+            <button type="submit" class="btn btn-success">Assign</button>
+        </form>
 
     <nav>
         <ul class="pagination">
